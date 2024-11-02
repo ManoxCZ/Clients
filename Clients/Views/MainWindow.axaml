@@ -1,0 +1,153 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:ClientsMVVM.ViewModels"
+		xmlns:converters="using:ClientsMVVM.Converters"
+		xmlns:views="using:ClientsMVVM.Views"
+		xmlns:ui="using:FluentAvalonia.UI.Controls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ClientsMVVM.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Klienti">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Window.Resources>
+		<converters:ClientsFilterConverter x:Key="ClientsFilterConverter"/>
+	</Window.Resources>
+
+	<Window.DataTemplates>
+		<DataTemplate DataType="vm:ClientVisitViewModel">
+			<StackPanel Orientation="Vertical">
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Datum" Margin="4" />
+					<DatePicker SelectedDate="{Binding DateTime}" />
+				</StackPanel>
+
+				<TextBox Text="{Binding Text}" Margin="4" MinHeight="100" MaxHeight="100" AcceptsReturn="True" TextWrapping="Wrap" />
+			</StackPanel>
+		</DataTemplate>
+		
+		<DataTemplate DataType="vm:ClientViewModel">
+			<Grid RowDefinitions="auto,*, auto">
+				<Border Grid.Row="0" CornerRadius="{DynamicResource ControlCornerRadius}"
+						Background="{DynamicResource ExpanderHeaderBackground}"
+						BorderBrush="{DynamicResource ExpanderHeaderBorderBrush}"
+						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
+						Margin="5" Padding="10">
+					<StackPanel Orientation="Vertical">
+						<TextBlock Text="Obecné" Theme="{StaticResource SubtitleTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+
+						<Grid ColumnDefinitions="auto, 1* ,auto, 1*">
+							<TextBlock Text="Jméno" Theme="{StaticResource BodyStrongTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+							<TextBox Text="{Binding FirstName}" Grid.Column="1" VerticalAlignment="Center" Margin="4" />
+							<TextBlock Text="Příjmení" Theme="{StaticResource BodyStrongTextBlockStyle}" Grid.Column="2" VerticalAlignment="Center" Margin="4" />
+							<TextBox Text="{Binding Surname}" Grid.Column="3" VerticalAlignment="Center" Margin="4" />
+						</Grid>
+
+						<TextBlock Text="Popis" Margin="4" Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+						<TextBox Text="{Binding Description}" Margin="4" MinHeight="150" MaxHeight="150" AcceptsReturn="True" TextWrapping="Wrap" />
+					</StackPanel>
+				</Border>
+
+				<Border Grid.Row="1" CornerRadius="{DynamicResource ControlCornerRadius}"
+						Background="{DynamicResource ExpanderHeaderBackground}"
+						BorderBrush="{DynamicResource ExpanderHeaderBorderBrush}"
+						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
+						Margin="5" Padding="10">
+					<Grid RowDefinitions="auto, *">
+						<TextBlock Text="Návštěvy" Theme="{StaticResource SubtitleTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+
+						<ScrollViewer Grid.Row="1">
+							<ListBox ItemsSource="{Binding Visits}" VerticalAlignment="Stretch" Margin="4">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Top"  Margin="4" >
+												<Run Text="{Binding DateTime.DateTime.Day}"/>.<Run Text="{Binding DateTime.DateTime.Month}"/>.<Run Text="{Binding DateTime.DateTime.Year}"/>
+											</TextBlock>
+
+											<TextBlock Text="{Binding Text}" Margin="4"  VerticalAlignment="Top"/>
+										</StackPanel>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</ScrollViewer>
+					</Grid>
+				</Border>
+
+				<Border Grid.Row="2" CornerRadius="{DynamicResource ControlCornerRadius}"
+						Background="{DynamicResource ExpanderHeaderBackground}" 
+						BorderBrush="{DynamicResource ExpanderHeaderBorderBrush}"
+						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
+						Margin="5" Padding="10">
+					<StackPanel Orientation="Vertical">
+						<TextBlock Text="Nová návšteva" Theme="{StaticResource SubtitleTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+
+						<ContentControl Content="{Binding NewVisit}" Grid.Column="1" Margin="4"/>
+						<Button Content="Přidat" HorizontalAlignment="Right" Margin="4" Command="{Binding AddNewVisitCommand}"/>
+					</StackPanel>
+				</Border>
+			</Grid>
+		</DataTemplate>
+	</Window.DataTemplates>
+
+	<Grid RowDefinitions="auto,*">
+		<Border Grid.Row="0" CornerRadius="{DynamicResource ControlCornerRadius}"
+						Background="{DynamicResource ExpanderHeaderBackground}"
+						BorderBrush="{DynamicResource ExpanderHeaderBorderBrush}"
+						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
+						Margin="5" Padding="10">
+			<Grid ColumnDefinitions="*, auto">
+				<ui:CommandBar DefaultLabelPosition="Right">
+					<ui:CommandBar.PrimaryCommands>
+						<ui:CommandBarButton IconSource="People" Label="Vybrat klienta     ">
+							<ui:CommandBarButton.Flyout >
+								<Flyout ShowMode="TransientWithDismissOnPointerMoveAway">
+									<StackPanel Orientation="Vertical" Margin="4">
+										<TextBox Text="{Binding Filter}" Margin="4"/>
+
+										<ListBox SelectedItem="{Binding SelectedClient}" VerticalAlignment="Stretch" Margin="4">
+											<ListBox.ItemsSource>
+												<MultiBinding Converter="{StaticResource ClientsFilterConverter}">
+													<Binding Path="Clients"/>
+													<Binding Path="Filter"/>
+												</MultiBinding>
+											</ListBox.ItemsSource>
+
+											<ListBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Label Content="{Binding Surname}"/>
+														<Label Content="{Binding FirstName}"/>
+													</StackPanel>
+												</DataTemplate>
+											</ListBox.ItemTemplate>
+										</ListBox>
+									</StackPanel>
+								</Flyout>
+							</ui:CommandBarButton.Flyout>
+
+						</ui:CommandBarButton >
+
+						<ui:CommandBarButton IconSource="AddFriend" Label="Nový klient" Command="{Binding AddNewClientCommand}"/>
+					</ui:CommandBar.PrimaryCommands>
+				</ui:CommandBar>
+
+				<ui:CommandBar DefaultLabelPosition="Right" Grid.Column="1">
+					<ui:CommandBar.PrimaryCommands>
+						<ui:CommandBarButton IconSource="Home" Label="Uzamknout" Command="{Binding LockCommand}"/>
+					</ui:CommandBar.PrimaryCommands>
+				</ui:CommandBar>
+			</Grid>
+		</Border>
+
+		<ContentControl Content="{Binding SelectedClient}" Grid.Row="1" />
+	</Grid>
+</Window>
