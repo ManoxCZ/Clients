@@ -41,18 +41,19 @@ public partial class MainWindowViewModel : ViewModelBase
     public async Task RefreshAsync()
     {
         Clients = (await _clientDataService.GetClientsAsync())
-            .Select(client => new ClientViewModel(client))
+            .Select(client => new ClientViewModel(_clientDataService, client))
             .ToList();
     }
-    
+
     public void AddNewClientCommand(object? parameter)
     {
-        ClientViewModel newClient = new(new()
-        {
-            Id = Guid.NewGuid(),
-            FirstName = "Klient",
-            Surname = "Nový"
-        });
+        ClientViewModel newClient = new(_clientDataService,
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Klient",
+                Surname = "Nový"
+            });
 
         Clients.Add(newClient);
 

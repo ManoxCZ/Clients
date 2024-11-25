@@ -1,12 +1,16 @@
-﻿using ClientsMVVM.Models;
+﻿using Avalonia.Metadata;
+using ClientsMVVM.Models;
+using ClientsMVVM.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClientsMVVM.ViewModels;
 
 public class ClientViewModel : ViewModelBase
 {
-    public readonly Client _client;
+    private readonly ClientDataService _clientDataService;
+    private readonly Client _client;
 
     private string _firstName = null!;
     private string _surname = null!;
@@ -44,8 +48,9 @@ public class ClientViewModel : ViewModelBase
     }
 
 
-    public ClientViewModel(Client client)
+    public ClientViewModel(ClientDataService clientDataService, Client client)
     {
+        _clientDataService = clientDataService;
         _client = client;
 
         CopyFromModel();
@@ -67,12 +72,37 @@ public class ClientViewModel : ViewModelBase
         _client.Visits = Visits.Select(visit => visit.ClientVisit).ToList();
     }
 
+    private bool ViewModelEqualsModel()
+    {
+        return _client.FirstName == FirstName &&
+            _client.Surname == Surname &&
+            _client.Description == Description;
+    }
+
     public void AddNewVisitCommand(object? parameter)
     {
         Visits = Visits.Concat([NewVisit])
             .OrderByDescending(visit => visit.DateTime)
             .ToList();
+        
 
         NewVisit = new(new());
+    }
+
+    public void SaveInfoCommand(object? parameter)
+    {
+        CopyToModel();
+
+        Task _ = _clientDataService.SaveClientDataAsync(_client);
+
+        OnPropertyChanged(nameof(FirstName));
+    }
+
+    [DependsOn(nameof(FirstName))]
+    [DependsOn(nameof(Surname))]
+    [DependsOn(nameof(Description))]    
+    public bool CanSaveInfoCommand(object? parameter)
+    {
+        return !ViewModelEqualsModel();
     }
 }
