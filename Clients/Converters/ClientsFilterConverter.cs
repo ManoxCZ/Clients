@@ -1,12 +1,12 @@
 ﻿using Avalonia.Data.Converters;
-using ClientsMVVM.ViewModels;
+using Clients.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace ClientsMVVM.Converters;
+namespace Clients.Converters;
 
 internal class ClientsFilterConverter : IMultiValueConverter
 {

@@ -1,12 +1,11 @@
-﻿using ClientsMVVM.Models;
+﻿using Clients.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static CommunityToolkit.Mvvm.ComponentModel.__Internals.__TaskExtensions.TaskAwaitableWithoutEndValidation;
 
-namespace ClientsMVVM.Services;
+namespace Clients.Services;
 
 public class ClientDataService
 {
@@ -17,7 +16,7 @@ public class ClientDataService
     public ClientDataService()
     {
         string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string clientsPath = Path.Combine(appDataPath, "Clients");               
+        string clientsPath = Path.Combine(appDataPath, "Clients");
         _clientsDataFolder = Path.Combine(clientsPath, "Data");
 
         if (!Directory.Exists(clientsPath))
@@ -84,7 +83,7 @@ public class ClientDataService
                     _lockedGuids.Add(id);
 
                     return;
-                }                
+                }
             }
 
             await Task.Delay(100);
@@ -92,7 +91,7 @@ public class ClientDataService
     }
 
     private Task UnlockFile(Guid id)
-    {        
+    {
         lock (_lock)
         {
             if (_lockedGuids.Contains(id))
@@ -113,8 +112,8 @@ public class ClientDataService
 
     private async Task WriteFileAsync(Client client)
     {
-        using StreamWriter writer = new (Path.Combine(_clientsDataFolder, client.Id.ToString()));
-        
+        using StreamWriter writer = new(Path.Combine(_clientsDataFolder, client.Id.ToString()));
+
         await JsonSerializer.SerializeAsync(writer.BaseStream, client);
     }
 }

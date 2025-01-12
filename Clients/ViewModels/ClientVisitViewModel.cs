@@ -1,41 +1,41 @@
-﻿using ClientsMVVM.Models;
+﻿using Clients.Models;
 using System;
 
-namespace ClientsMVVM.ViewModels;
+namespace Clients.ViewModels;
 
 public class ClientVisitViewModel : ViewModelBase
 {
     public readonly ClientVisit ClientVisit;
 
-    private DateTimeOffset _dateTime = DateTimeOffset.Now;
-    public DateTimeOffset DateTime 
+    public DateTimeOffset DateTime
     {
-        get => _dateTime;
-        set => SetProperty(ref _dateTime, value);
+        get => ClientVisit.DateTime;
+        set
+        {
+            DateTimeOffset dateTime = ClientVisit.DateTime;
+
+            if (SetProperty(ref dateTime, value))
+            {
+                ClientVisit.DateTime = dateTime;
+            }
+        }
     }
-    private string? _text;
-    public string? Text 
+    public string? Text
     {
-        get => _text;
-        set => SetProperty(ref _text, value); 
+        get => ClientVisit.Text;
+        set
+        {
+            string? text = ClientVisit.Text;
+
+            if (SetProperty(ref text, value))
+            {
+                ClientVisit.Text = text;
+            }
+        }
     }
 
     public ClientVisitViewModel(ClientVisit clientVisit)
     {
-        ClientVisit = clientVisit;
-
-        CopyFromModel();
-    }
-
-    private void CopyFromModel()
-    {
-        DateTime = ClientVisit.DateTime;
-        Text = ClientVisit.Text;
-    }
-
-    private void CopyToModel()
-    {
-        ClientVisit.DateTime = DateTime;
-        ClientVisit.Text = Text;
-    }
+        ClientVisit = clientVisit;    
+    }    
 }

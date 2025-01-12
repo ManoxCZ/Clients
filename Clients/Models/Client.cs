@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ClientsMVVM.Models;
+namespace Clients.Models;
 
 public class Client
 {

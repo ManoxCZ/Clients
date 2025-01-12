@@ -2,19 +2,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:ClientsMVVM.ViewModels"
-		xmlns:converters="using:ClientsMVVM.Converters"
-		xmlns:views="using:ClientsMVVM.Views"
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:vm="using:Clients.ViewModels"
+		xmlns:converters="using:Clients.Converters"
+		xmlns:views="using:Clients.Views"
+		xmlns:behaviors="using:Clients.Behaviors"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="ClientsMVVM.Views.MainWindow"
+        x:Class="Clients.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Klienti">
 
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+	<Design.DataContext>		
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
@@ -30,20 +30,26 @@
 					<DatePicker SelectedDate="{Binding DateTime}" />
 				</StackPanel>
 
-				<TextBox Text="{Binding Text}" Margin="4" MinHeight="100" MaxHeight="100" AcceptsReturn="True" TextWrapping="Wrap" />
+				<TextBox Text="{Binding Text}" Margin="4" MinHeight="100" MaxHeight="100" AcceptsReturn="True" TextWrapping="Wrap">
+					<i:Interaction.Behaviors>
+						<behaviors:FocusOnPropertyChangedBehavior />					
+					</i:Interaction.Behaviors>
+				</TextBox>
 			</StackPanel>
 		</DataTemplate>
 		
 		<DataTemplate DataType="vm:ClientViewModel">
-			<Grid RowDefinitions="auto,*, auto">
+			<Grid RowDefinitions="auto,*">
 				<Border Grid.Row="0" CornerRadius="{DynamicResource ControlCornerRadius}"
-						Background="{DynamicResource ExpanderHeaderBackground}"
+						Background="LightGreen"
 						BorderBrush="{DynamicResource ExpanderHeaderBorderBrush}"
 						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
 						Margin="5" Padding="10">
 					<StackPanel Orientation="Vertical">
 						<Grid ColumnDefinitions="*, auto">
-							<TextBlock Text="Obecné" Theme="{StaticResource SubtitleTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+							<TextBlock Text="Klient" Theme="{StaticResource SubtitleTextBlockStyle}" 
+									   Foreground="Teal"
+									   Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
 							<Button Grid.Column="1" Content="Uložit" Command="{Binding SaveInfoCommand}"/>															
 						</Grid>
 
@@ -65,7 +71,14 @@
 						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
 						Margin="5" Padding="10">
 					<Grid RowDefinitions="auto, *">
-						<TextBlock Text="Návštěvy" Theme="{StaticResource SubtitleTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+						<Grid ColumnDefinitions="*, auto">
+							<TextBlock Text="Návštěvy" Theme="{StaticResource SubtitleTextBlockStyle}"
+								   Foreground="Teal"
+								   Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
+							
+							<Button Grid.Column="1" Content="Přidat návštěvu" Command="{Binding AddNewVisitCommandAsync}"/>
+						</Grid>
+						
 
 						<ScrollViewer Grid.Row="1">
 							<ListBox ItemsSource="{Binding Visits}" VerticalAlignment="Stretch" Margin="4">
@@ -83,20 +96,7 @@
 							</ListBox>
 						</ScrollViewer>
 					</Grid>
-				</Border>
-
-				<Border Grid.Row="2" CornerRadius="{DynamicResource ControlCornerRadius}"
-						Background="{DynamicResource ExpanderHeaderBackground}" 
-						BorderBrush="{DynamicResource ExpanderHeaderBorderBrush}"
-						BorderThickness="{DynamicResource ExpanderHeaderBorderThickness}"
-						Margin="5" Padding="10">
-					<StackPanel Orientation="Vertical">
-						<TextBlock Text="Nová návšteva" Theme="{StaticResource SubtitleTextBlockStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="4"  />
-
-						<ContentControl Content="{Binding NewVisit}" Grid.Column="1" Margin="4"/>
-						<Button Content="Přidat" HorizontalAlignment="Right" Margin="4" Command="{Binding AddNewVisitCommand}"/>
-					</StackPanel>
-				</Border>
+				</Border>				
 			</Grid>
 		</DataTemplate>
 	</Window.DataTemplates>

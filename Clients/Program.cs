@@ -1,7 +1,8 @@
 ﻿using Avalonia;
+using Clients;
 using System;
 
-namespace ClientsMVVM
+namespace Clients
 {
     internal sealed class Program
     {

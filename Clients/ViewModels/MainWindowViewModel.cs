@@ -1,15 +1,15 @@
-﻿using ClientsMVVM.Services;
+﻿using Clients.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ClientsMVVM.ViewModels;
+namespace Clients.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly ClientDataService _clientDataService;
-    
+
     private string _filter = string.Empty;
     private string Filter
     {

@@ -1,13 +1,11 @@
-using Avalonia.Controls;
 using FluentAvalonia.UI.Windowing;
 
-namespace ClientsMVVM.Views
+namespace Clients.Views;
+
+public partial class MainWindow : AppWindow
 {
-    public partial class MainWindow : AppWindow
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

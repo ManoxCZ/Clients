@@ -2,13 +2,13 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using ClientsMVVM.Services;
-using ClientsMVVM.ViewModels;
-using ClientsMVVM.Views;
+using Clients.Services;
+using Clients.ViewModels;
+using Clients.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace ClientsMVVM;
+namespace Clients;
 
 public partial class App : Application
 {

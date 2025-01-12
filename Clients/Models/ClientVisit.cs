@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClientsMVVM.Models;
+namespace Clients.Models;
 
 public class ClientVisit
 {
